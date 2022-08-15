@@ -30,6 +30,9 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $createAt = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
@@ -103,5 +106,17 @@ class Product
         $this->createAt = new \DateTimeImmutable();
 
         return $this;
+    }
+
+    // slug
+    public function generateSlug(SluggerInterface $slugger): self
+    {
+        // symfony string bundle link: https://symfony.com/doc/current/components/string.html
+        $this->slug = $slugger->slug($this->title);
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
 }
