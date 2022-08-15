@@ -23,6 +23,8 @@ class ProductController extends AbstractController
         ProductRepository $repository,
         ProductRequest $validatedRequest)
     {
+        // throw new \Exception('test listeners');
+
        $product = new Product();
        $product->setTitle($validatedRequest->title);
        $product->setStock($validatedRequest->stock);
