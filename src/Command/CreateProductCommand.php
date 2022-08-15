@@ -6,6 +6,7 @@ use Symfony\Component\Console\Atrribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Requests\ProductRequest;
 
 /* 
     We create a command in the console with the name "app:create-product"
@@ -20,6 +21,11 @@ class CreateProductCommand extends Command
 
     protected static $defaultName = 'app:create-product'; // we access to the name of command
 
+    public function __construct(readonly private ProductService $productService, private ValidatorInterface $validator)
+    {
+        parent::__construct();
+    }
+
     protected function configure()
     {
         // we have addArgument when we execute the Command
@@ -31,9 +37,15 @@ class CreateProductCommand extends Command
     // execute must return int
     protected function execute(InputInterface $input, OutputInterface $output):int
     {
-        $input->getArgument();
+        $args = $input->getArguments();
 
-        $output->writeln('Clog from command in src/Command/CreateProductCommand.php');
+        $request = new ProductRequest($input->getArguments(), $this->validator);
+
+        $product = $this->productService->new($request);
+
+        $output->writeln($product->getId());
+
+        // $output->writeln('log from command in src/Command/CreateProductCommand.php');
         return self::SUCCESS; // return 0
     }
 }
