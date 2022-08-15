@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Entity\Product;
-// use NewProduct
 use App\Repository\ProductRepository;
 use App\Requests\ProductRequest;
 use Symfony\Component\Messenger\MessageBusInterface;
