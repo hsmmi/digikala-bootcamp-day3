@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks] // to know we have events to manage
 class Product
 {
     #[ORM\Id]
@@ -25,6 +26,9 @@ class Product
     #[ORM\Column]
     #[Groups('product')]
     private ?int $stock = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createAt = null;
 
     public function __construct()
     {
@@ -83,6 +87,20 @@ class Product
         if ($this->invoices->removeElement($invoice)) {
             $invoice->removeProduct($this);
         }
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeImmutable
+    {
+        return $this->createAt;
+    }
+
+    // to automatically run this method when the object is created
+    #[ORM\PrePersist]
+    public function setCreateAt(): self
+    {
+        $this->createAt = new \DateTimeImmutable();
 
         return $this;
     }
