@@ -21,7 +21,8 @@ class ProductController extends AbstractController
     public function new(
         Request $request,
         ProductRepository $repository,
-        ProductRequest $validatedRequest)
+        ProductRequest $validatedRequest,
+        MessageBusInterface $bus,)
     {
         // throw new \Exception('test listeners');
 
@@ -30,6 +31,9 @@ class ProductController extends AbstractController
        $product->setStock($validatedRequest->stock);
 
        $repository->add($product, true);
+
+        // NewProduct is an message class
+        $bus->dispatch(new NewProduct($product->getId())); 
 
        return $this->json($product);
     }
